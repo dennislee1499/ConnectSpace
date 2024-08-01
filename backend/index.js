@@ -4,6 +4,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose'); 
 const bcrypt = require('bcrypt');
+const authRoutes = require('./routes/AuthRoutes');
 
 mongoose.connect(process.env.MONGO_URI);
 const port = process.env.PORT || 3001;
@@ -18,6 +19,8 @@ app.use(cors({
 
 app.use(cookieParser());
 app.use(express.json()); 
+
+app.use("/api/auth", authRoutes); 
 
 const server = app.listen(port, () => {
     console.log(`Server is listening on http://localhost:${port}`);

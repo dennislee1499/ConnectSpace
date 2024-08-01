@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const maxAge = '4d'; 
 
-export const signup = async (req, res, next) => {
+const signup = async (req, res, next) => {
     try {
         const { email, password } = req.body; 
         if (!email || !password) {
@@ -37,3 +37,5 @@ export const signup = async (req, res, next) => {
         res.status(500).json({ err: 'Interval server error' });
     }
 };
+
+module.exports = { signup }; 
