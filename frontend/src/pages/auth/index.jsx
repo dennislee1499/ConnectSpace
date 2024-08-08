@@ -3,11 +3,38 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import backgroundImage from "../../assets/background.jpg";
+import { toast } from "sonner";
 
 const Auth = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState(""); 
+
+    const validateSignup = () => {
+      if (!email.length) {
+        toast.error("Email is required");
+        return false; 
+      }
+      if (!password.length) {
+        toast.error("Password is required"); 
+        return false; 
+      }
+      if (!confirmPassword.length) {
+        toast.error("Please confirm password");
+        return false; 
+      }
+      if (password !== confirmPassword) {
+        toast.error("Passwords must match")
+        return false; 
+      }
+      return true; 
+    };
+
+    const handleSignup = async () => {
+      if (validateSignup()) {
+        alert("Signed Up!")
+      }
+    };
 
   return (
     <div className="h-[100vh] w-[100vw] flex items-center justify-center"
@@ -76,13 +103,13 @@ const Auth = () => {
                               onChange={(e) => setPassword(e.target.value)}  
                             />
                             <Input 
-                              placeholder="confirm Password" 
+                              placeholder="Confirm Password" 
                               type="password" 
                               className="rounded-full p-6" 
                               value={confirmPassword}
                               onChange={(e) => setConfirmPassword(e.target.value)}  
                             />
-                            <Button className="rounded-full p-6">Sign Up</Button>
+                            <Button className="rounded-full p-6" onClick={ handleSignup }>Sign Up</Button>
                         </TabsContent>
                     </Tabs>
                 </div>
