@@ -1,4 +1,4 @@
-const { genSalt } = require('bcrypt');
+const { genSalt, hash } = require('bcrypt');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
 

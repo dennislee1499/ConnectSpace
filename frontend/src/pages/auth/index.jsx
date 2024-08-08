@@ -4,6 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import backgroundImage from "../../assets/background.jpg";
 import { toast } from "sonner";
+import apiClient from "@/lib/api-client";
+import { SIGNUP_ROUTE } from "@/utils/constants";
 
 const Auth = () => {
     const [email, setEmail] = useState("");
@@ -32,7 +34,8 @@ const Auth = () => {
 
     const handleSignup = async () => {
       if (validateSignup()) {
-        alert("Signed Up!")
+        const res = await apiClient.post(SIGNUP_ROUTE, { email, password });
+        console.log(res);
       }
     };
 

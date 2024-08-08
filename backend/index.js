@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const authRoutes = require('./routes/AuthRoutes');
 
 mongoose.connect(process.env.MONGO_URI);
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 4001;
 const jwtSecret = process.env.JWT_SECRET;
 
 const app = express(); 
@@ -22,7 +22,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes); 
 
-const server = app.listen(port, () => {
-    console.log(`Server is listening on http://localhost:${port}`);
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 })
 
