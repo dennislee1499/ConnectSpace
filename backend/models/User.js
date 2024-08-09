@@ -29,7 +29,7 @@ const userSchema = new Schema(
             type: Number,
             required: false,
         },
-        newUser: {
+        profileSetup: {
             type: Boolean,
             default: false,
         },

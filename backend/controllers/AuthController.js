@@ -30,7 +30,7 @@ const signup = async (req, res, next) => {
             user: {
                 id: createdUser.id,
                 email: createdUser.email, 
-                newUser: createdUser.newUser,
+                profileSetup: createdUser.profileSetup,
             },
         })
     } catch (err) {
@@ -67,7 +67,7 @@ const login = async (req, res, next) => {
             user: {
                 id: user.id,
                 email: user.email, 
-                newUser: user.newUser,
+                profileSetup: user.profileSetup,
                 firstName: user.firstName,
                 lastName: user.lastName,
                 profileImageUrl: user.profileImageUrl,

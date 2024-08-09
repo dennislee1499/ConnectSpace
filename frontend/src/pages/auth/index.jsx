@@ -6,11 +6,13 @@ import backgroundImage from "../../assets/background.jpg";
 import { toast } from "sonner";
 import apiClient from "@/lib/api-client";
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
+import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState(""); 
+    const navigate = useNavigate();
 
     const validateSignup = () => {
       if (!email.length) {
@@ -51,7 +53,9 @@ const Auth = () => {
           { email, password }, 
           { withCredentials: true }
         );
-        console.log(res);
+        if (res.status === 201) {
+          navigate("/profile"); 
+        }
       }
     };
 
@@ -62,6 +66,13 @@ const Auth = () => {
           { email, password },
           { withCredentials: true }
         );
+        if (res.data.user.id) {
+          if (res.data.user.profileSetup) {
+            navigate("/chat"); 
+          } else {
+            navigate("/profile"); 
+          }
+        }
         console.log(res); 
       }
     }
