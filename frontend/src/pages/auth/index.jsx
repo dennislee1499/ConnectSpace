@@ -5,7 +5,7 @@ import { useState } from "react";
 import backgroundImage from "../../assets/background.jpg";
 import { toast } from "sonner";
 import apiClient from "@/lib/api-client";
-import { SIGNUP_ROUTE } from "@/utils/constants";
+import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
 
 const Auth = () => {
     const [email, setEmail] = useState("");
@@ -32,12 +32,39 @@ const Auth = () => {
       return true; 
     };
 
+    const validateLogin = () => {
+      if (!email.length) {
+        toast.error("Email is required");
+        return false; 
+      }
+      if (!password.length) {
+        toast.error("Password is required"); 
+        return false; 
+      }
+      return true; 
+    }
+
     const handleSignup = async () => {
       if (validateSignup()) {
-        const res = await apiClient.post(SIGNUP_ROUTE, { email, password });
+        const res = await apiClient.post(
+          SIGNUP_ROUTE, 
+          { email, password }, 
+          { withCredentials: true }
+        );
         console.log(res);
       }
     };
+
+    const handleLogin = async () => {
+      if (validateLogin()) {
+        const res = await apiClient.post(
+          LOGIN_ROUTE,
+          { email, password },
+          { withCredentials: true }
+        );
+        console.log(res); 
+      }
+    }
 
   return (
     <div className="h-[100vh] w-[100vw] flex items-center justify-center"
@@ -88,7 +115,7 @@ const Auth = () => {
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}  
                             />
-                            <Button className="rounded-full p-6">Login</Button>
+                            <Button className="rounded-full p-6" onClick={ handleLogin }>Login</Button>
                         </TabsContent>
                         <TabsContent className="flex flex-col gap-5" value="signup">
                             <Input 
