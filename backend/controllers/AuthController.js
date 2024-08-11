@@ -80,4 +80,28 @@ const login = async (req, res, next) => {
     }
 }
 
-module.exports = { signup, login }; 
+const getUserInfo = async (req, res, next) => {
+    try {
+        const userData = await User.findById(req.userId); 
+        if (!userData) {
+            return res.status(404).send("User with provided ID not found");
+        }
+
+        res.status(200).json({
+            user: {
+                id: userData.id,
+                email: userData.email, 
+                profileSetup: userData.profileSetup,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                profileImageUrl: userData.profileImageUrl,
+                color: userData.color,
+            },
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err: 'Interval server error' });
+    }
+}
+
+module.exports = { signup, login, getUserInfo }; 

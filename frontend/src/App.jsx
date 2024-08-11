@@ -3,6 +3,9 @@ import Auth from './pages/auth';
 import Chat from './pages/chat';
 import Profile from './pages/profile';
 import { useAppStore } from './store';
+import { useState, useEffect } from 'react';
+import apiClient from './lib/api-client';
+import { GET_USER_INFO } from './utils/constants';
 
 const UnauthorizedRoute = ({ children }) => {
   const { userInfo } = useAppStore(); 
@@ -17,6 +20,38 @@ const AuthorizedRoute = ({ children }) => {
 }
 
 const App = () => {
+  const { userInfo, setUserInfo } = useAppStore(); 
+  const [loading, setLoading] = useState(true); 
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const res = await apiClient.get(GET_USER_INFO, {
+          withCredentials: true,
+        });
+        console.log({res});
+        if (res.status === 200 && res.data.user) {
+          setUserInfo(res.data.user); 
+        } else {
+          setUserInfo(undefined);
+        }
+      } catch (err) {
+        console.log({err})
+      } finally {
+        setLoading(false); 
+      }
+    }
+    if (!userInfo) {
+      getUserData(); 
+    } else {
+      setLoading(false); 
+    }
+  }, [userInfo, setUserInfo]); 
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
   return (
     <BrowserRouter>
       <Routes>
