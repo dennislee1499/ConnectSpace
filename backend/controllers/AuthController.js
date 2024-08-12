@@ -104,4 +104,34 @@ const getUserInfo = async (req, res, next) => {
     }
 }
 
-module.exports = { signup, login, getUserInfo }; 
+const updateProfile = async (req, res, next) => {
+    try {
+        const { userId } = req; 
+        const { firstName, lastName, color } = req.body; 
+        if (!firstName || !lastName) {
+            return res.status(404).send("First/Last name and color is required. ");
+        }
+
+        const userData = await User.findByIdAndUpdate(userId, {
+            firstName, lastName, color, profileSetup: true,
+        }, { new: true, runValidators: true }
+    );
+
+        res.status(200).json({
+            user: {
+                id: userData.id,
+                email: userData.email, 
+                profileSetup: userData.profileSetup,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                profileImageUrl: userData.profileImageUrl,
+                color: userData.color,
+            },
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err: 'Interval server error' });
+    }
+}
+
+module.exports = { signup, login, getUserInfo, updateProfile }; 

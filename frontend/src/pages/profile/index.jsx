@@ -1,5 +1,5 @@
 import { useAppStore } from "@/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
@@ -7,10 +7,13 @@ import { colors, getColor } from "@/lib/utils";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { UPDATE_PROFILE } from "@/utils/constants";
+import apiClient from "@/lib/api-client";
 
 
 const Profile = () => {
-  const { userInfo } = useAppStore();
+  const { userInfo, setUserInfo } = useAppStore();
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState(""); 
   const [lastName, setLastName] = useState("");
@@ -18,8 +21,43 @@ const Profile = () => {
   const [hover, setHover] = useState(false); 
   const [selectedColor, setSelectedColor] = useState(0); 
 
+  useEffect(() => {
+    if (userInfo.profileSetup) {
+      setFirstName(userInfo.firstName); 
+      setLastName(userInfo.lastName); 
+      setSelectedColor(userInfo.color);
+    }
+  }, [userInfo]);
+
+  const validateProfile = () => {
+    if (!firstName) {
+      toast.error("First name is required");
+      return false; 
+    } 
+    if (!lastName) {
+      toast.error("Last name is required");
+      return false; 
+    }
+    return true; 
+  }
+
   const saveChanges = async () => {
-    
+    if (validateProfile()) {
+      try {
+        const res = await apiClient.post(
+          UPDATE_PROFILE,
+          { firstName, lastName, color: selectedColor },
+          { withCredentials: true }
+        );
+        if (res.status === 200 && res.data.user) {
+          setUserInfo(res.data.user)
+          toast.success("Profile updated!");
+          navigate("/chat");
+        }
+      } catch (err) {
+        console.log(err); 
+      }
+    }
   }
 
   return (
@@ -43,8 +81,8 @@ const Profile = () => {
               ) : (
                 <div className={`uppercase h-32 w-32 md:h-48 md:w-48 text-5xl border-[1px] flex items-center justify-center rounded-full text-white ${getColor(selectedColor)}`}>
                   {firstName
-                    ? firstName.split("").shift()
-                    : userInfo.email.split("").shift()}
+                    ? firstName.split("")[0]
+                    : userInfo.email.split("")[0]}
                 </div>
               )
             }
@@ -106,7 +144,7 @@ const Profile = () => {
       <div className="flex justify-center w-full">
         <Button 
           className="h-16 w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4 mx-auto bg-gradient-to-r from-[#4e54c8] to-[#8f94fb] hover:from[#8f94fb] hover:to-[#4e54c8] transition-all duration-300"
-          onClick={saveChanges}
+          onClick={ saveChanges }
           >
             Save Changes
         </Button>
