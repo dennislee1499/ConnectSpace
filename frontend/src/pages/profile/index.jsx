@@ -60,10 +60,18 @@ const Profile = () => {
     }
   }
 
+  const handleNavigate = () => {
+    if (userInfo.profileSetup) {
+      navigate("/chat");
+    } else {
+      toast.error("Please finish setting up profile."); 
+    }
+  };
+
   return (
     <div className="bg-[#1b1c24] h-[100vh] flex items-center justify-center flex-col gap-10">
       <div className="flex flex-col gap-10 w-[80vw] md:w-max">
-        <div>
+        <div onClick={ handleNavigate }>
           <IoArrowBack className="text-4xl lg:text-6xl text-white/90 cursor-pointer" />
         </div>
         <div className="h-full w-32 md:w-48 md:h-48 relative flex items-center justify-center"
