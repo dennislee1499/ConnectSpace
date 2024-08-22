@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { renameSync, unlinkSync } = require('fs');
 
 const maxAge = 4 * 24 * 60 * 1000; 
 
@@ -70,7 +71,7 @@ const login = async (req, res, next) => {
                 profileSetup: user.profileSetup,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                profileImageUrl: user.profileImageUrl,
+                profileImage: user.profileImage,
                 color: user.color,
             },
         })
@@ -94,7 +95,7 @@ const getUserInfo = async (req, res, next) => {
                 profileSetup: userData.profileSetup,
                 firstName: userData.firstName,
                 lastName: userData.lastName,
-                profileImageUrl: userData.profileImageUrl,
+                profileImage: userData.profileImage,
                 color: userData.color,
             },
         });
@@ -124,7 +125,7 @@ const updateProfile = async (req, res, next) => {
                 profileSetup: userData.profileSetup,
                 firstName: userData.firstName,
                 lastName: userData.lastName,
-                profileImageUrl: userData.profileImageUrl,
+                profileImage: userData.profileImage,
                 color: userData.color,
             },
         });
@@ -134,4 +135,29 @@ const updateProfile = async (req, res, next) => {
     }
 }
 
-module.exports = { signup, login, getUserInfo, updateProfile }; 
+const addProfileImage = async (req, res, next) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send("File is required"); 
+        }
+
+        const date = Date.now(); 
+        let fileName = "uploads/profiles/" + date + req.file.originalname;
+        renameSync(req.file.path, fileName);
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.userId, 
+            { profileImage: fileName },
+            { new: true, runValidators: true }
+        ); 
+
+        res.status(200).json({
+                profileImage: updatedUser.profileImage,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err: 'Interval server error' });
+    }
+}
+
+module.exports = { signup, login, getUserInfo, updateProfile, addProfileImage }; 
