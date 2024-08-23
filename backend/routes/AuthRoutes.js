@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { signup, login, getUserInfo, updateProfile } = require('../controllers/AuthController');
-const { addProfileImage, removeProfileImage } = require("../controllers/ImageController"); 
+const { addProfileImage, removeProfileImage } = require('../controllers/ImageController'); 
 const { authenticateToken } = require("../middlewares/AuthMiddleware");
 const multer = require("multer"); 
 
