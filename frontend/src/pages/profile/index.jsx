@@ -8,7 +8,7 @@ import { FaPlus, FaTrash } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { ADD_PROFILE_IMAGE, UPDATE_PROFILE } from "@/utils/constants";
+import { ADD_PROFILE_IMAGE, REMOVE_PROFILE_IMAGE, UPDATE_PROFILE } from "@/utils/constants";
 import apiClient from "@/lib/api-client";
 import { HOST } from "@/utils/constants";
 
@@ -99,7 +99,19 @@ const Profile = () => {
   }
 
   const handleDeleteImage = async () => {
-
+    try {
+      const res = await apiClient.delete(
+        REMOVE_PROFILE_IMAGE,
+        { withCredentials: true }
+      )
+      if (res.status === 200) {
+        setUserInfo({ ...userInfo, profileImage: null });
+        toast.success("Image deleted successfully!"); 
+        setProfileImage(null); 
+      }
+    } catch (err) {
+      console.log(err); 
+    }
   }
 
   return (
